@@ -49,3 +49,10 @@ apt-get update
 # To install exact version of kubernetes, use below command
 # curl -s https://packages.cloud.google.com/apt/dists/kubernetes-xenial/main/binary-amd64/Packages | grep Version | awk '{print $2}
 apt-get install -y kubelet=1.14.3-00 kubeadm=1.14.3-00 kubectl=1.14.3-00
+
+# Allow network bridge from container to localhost
+cat <<EOF >  /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sysctl --system

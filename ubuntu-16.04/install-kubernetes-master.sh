@@ -50,6 +50,13 @@ apt-get update
 # curl -s https://packages.cloud.google.com/apt/dists/kubernetes-xenial/main/binary-amd64/Packages | grep Version | awk '{print $2}
 apt-get install -y kubelet=1.14.3-00 kubeadm=1.14.3-00 kubectl=1.14.3-00
 
+# Allow network bridge from container to localhost
+cat <<EOF >  /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sysctl --system
+
 # Overlay network using calico
 echo "deploying kubernetes (with calico)..."
 kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.10.11 # add --apiserver-advertise-address="ip" if you want to use a different IP address than the main server IP
