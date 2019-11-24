@@ -38,6 +38,7 @@ mkdir -p /etc/systemd/system/docker.service.d
 # Restart docker.
 systemctl daemon-reload
 systemctl restart docker
+systemctl enable docker
 
 echo "installing kubernetes"
 apt-get update && apt-get install -y apt-transport-https
