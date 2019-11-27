@@ -131,7 +131,7 @@ spec:
     config:
       # The default and recommended storeType is dynamically set to bluestore for devices and filestore for directories.
       # Set the storeType explicitly only if it is required not to use the default.
-      storeType: bluestore
+      # storeType: bluestore
       # metadataDevice: "md0" # specify a non-rotational storage so ceph-volume will use it as block db device of bluestore.
       databaseSizeMB: "1024" # uncomment if the disks are smaller than 100 GB
       journalSizeMB: "1024"  # uncomment if the disks are 20 GB or smaller
@@ -146,12 +146,21 @@ spec:
     - name: "k8s-worker-1.test.local"
       devices:
       - name: "sdb"
+      - name: "sdc" 
+      config:
+        storeType: bluestore
     - name: "k8s-worker-2.test.local"
       devices:
       - name: "sdb"
+      - name: "sdc" 
+      config:
+        storeType: bluestore
     - name: "k8s-worker-3.test.local"
       devices:
       - name: "sdb"
+      - name: "sdc" 
+      config:
+        storeType: bluestore
   #  nodes:
   #  - name: "172.17.4.101"
   #    directories: # specific directories to use for storage can be specified for each node
