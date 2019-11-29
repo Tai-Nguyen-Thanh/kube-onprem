@@ -1,15 +1,4 @@
-#################################################################################################################
-# The deployment for the rook operator
-# Contains the common settings for most Kubernetes deployments.
-# For example, to create the rook-ceph cluster:
-#   kubectl create -f common.yaml
-#   kubectl create -f operator.yaml
-#   kubectl create -f cluster.yaml
-#
-# Also see other operator sample files for variations of operator.yaml:
-# - operator-openshift.yaml: Common settings for running in OpenShift
-#################################################################################################################
-# OLM: BEGIN OPERATOR DEPLOYMENT
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -39,8 +28,6 @@ spec:
         - mountPath: /etc/ceph
           name: default-config-dir
         env:
-        # If the operator should only watch for cluster CRDs in the same namespace, set this to "true".
-        # If this is not set to true, the operator will watch for cluster CRDs in all namespaces.
         - name: ROOK_CURRENT_NAMESPACE_ONLY
           value: "true"
         # To disable RBAC, uncomment the following:

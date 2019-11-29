@@ -1,0 +1,85 @@
+---
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: rook-ceph
+  namespace: storage
+spec:
+  cephVersion:
+    image: ceph/ceph:v14.2.4-20190917
+    allowUnsupported: false
+  dataDirHostPath: /var/lib/rook
+  skipUpgradeChecks: false
+  mon:
+    count: 3
+    allowMultiplePerNode: false
+  mgr:
+    modules:
+    - name: pg_autoscaler
+      enabled: true
+  dashboard:
+    enabled: true
+    ssl: true
+  monitoring:
+    # requires Prometheus to be pre-installed
+    enabled: true
+    rulesNamespace: storage
+  network:
+    hostNetwork: false
+  rbdMirroring:
+    workers: 0
+  placement:
+    all:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: rook-ceph
+              operator: In
+              values:
+              - cluster
+      podAffinity:
+      podAntiAffinity:
+      tolerations:
+      - key: object
+        operator: Exists
+  annotations:
+  resources:
+#    mgr:
+#      limits:
+#        cpu: "500m"
+#        memory: "1024Mi"
+#      requests:
+#        cpu: "500m"
+#        memory: "1024Mi"
+  removeOSDsIfOutAndSafeToRemove: false
+  storage: # cluster level storage configuration and selection
+    useAllNodes: false
+    useAllDevices: false
+    topologyAware: true
+    deviceFilter:
+    config:
+      databaseSizeMB: "1024" # uncomment if the disks are smaller than 100 GB
+      journalSizeMB: "1024"  # uncomment if the disks are 20 GB or smaller
+      osdsPerDevice: "1" # this value can be overridden at the node or device level
+    nodes:
+    - name: "ip-10-30-136-121.ap-southeast-1.compute.internal"
+      devices:
+      - name: "xvdb"
+      config:
+        storeType: bluestore
+    - name: "ip-10-30-18-126.ap-southeast-1.compute.internal"
+      devices:
+      - name: "xvdb"
+      config:
+        storeType: bluestore
+    - name: "ip-10-30-85-21.ap-southeast-1.compute.internal"
+      devices:
+      - name: "xvdb"
+      config:
+        storeType: bluestore
+  disruptionManagement:
+    managePodBudgets: false
+    osdMaintenanceTimeout: 30
+    manageMachineDisruptionBudgets: false
+    machineDisruptionBudgetNamespace: storage

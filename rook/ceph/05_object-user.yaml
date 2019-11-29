@@ -1,0 +1,9 @@
+---
+apiVersion: ceph.rook.io/v1
+kind: CephObjectStoreUser
+metadata:
+  name: object-admin
+  namespace: storage
+spec:
+  store: ceph-object-store
+  displayName: "Admin account to manage object store"
